@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% set nav = 'dash' %}
+{% block title %}داشبورد مدیریتی BI — راه زندگی{% endblock %}
+{% block body %}
+<h1>📊 داشبورد مدیریتی BI</h1>
+<div class="card no-print">
+  <div class="fgrid">
+    <label class="f">استان
+      <select id="fProvince">
+        <option value="">کل کشور</option>
+        {% for p in provinces %}
+        <option value="{{ p.id }}">{{ p.title }}</option>
+        {% endfor %}
+      </select>
+    </label>
+    <label class="f">از تاریخ (شمسی)
+      <input type="text" id="fDateFrom" placeholder="مثلاً ۱۴۰۴/۰۱/۰۱">
+    </label>
+    <label class="f">تا تاریخ (شمسی)
+      <input type="text" id="fDateTo" placeholder="مثلاً ۱۴۰۴/۱۲/۲۹">
+    </label>
+    <label class="f">&nbsp;
+      <button class="btn" id="biRun">جستجو</button>
+    </label>
+    <label class="f">&nbsp;
+      <button class="btn sec" id="dashSave">💾 ذخیره داشبورد</button>
+    </label>
+  </div>
+  {% if dashboards %}
+  <div class="flex wrap" style="margin-top:10px">
+    <span class="small muted">داشبوردهای ذخیره‌شده:</span>
+    {% for d in dashboards %}
+    <span class="chip-dash">
+      <button class="linklike apply-dash" data-i="{{ loop.index0 }}">📌 {{ d.name }}</button>
+      <button class="linklike gray del-dash" data-name="{{ d.name }}" title="حذف">✕</button>
+    </span>
+    {% endfor %}
+  </div>
+  {% endif %}
+  <div class="small muted" style="margin-top:8px">امروز: {{ today }} — آمارها تا ۵ دقیقه کش می‌شوند.</div>
+</div>
+<div id="biRoot"><div class="card"><span class="spin"></span> در حال محاسبه آمار…</div></div>
+{% endblock %}
+{% block scripts %}
+<script>
+  window.DASHBOARDS = {{ dashboards | tojson }};
+  window.DASH_PINS = [];
+  {% for d in dashboards %}{% for p in (d.pins or []) %}
+  window.DASH_PINS.push({ title: {{ (d.name ~ ' — ' ~ p.title) | tojson }}, spec: {{ p.spec | tojson }} });
+  {% endfor %}{% endfor %}
+</script>
+{% endblock %}

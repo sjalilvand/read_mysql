@@ -1,0 +1,13 @@
+# backups - NEVER commit real backups
+*.sql
+!test/sample_real.sql
+data/app.sqlite
+data/config.json
+data/import_status.json
+data/*.sqlite*
+viewer_data/
+__pycache__/
+*.pyc
+.venv/
+export_html/
+reports_saved/*.json

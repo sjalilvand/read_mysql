@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% set nav = 'person' %}
+{% block title %}استعلام مددجو — راه زندگی{% endblock %}
+{% block body %}
+<h1>🔍 استعلام وضعیت مددجو</h1>
+<div class="card no-print">
+  <form method="get" class="flex">
+    <input type="text" name="nid" value="{{ nid }}" placeholder="کد ملی ۱۰ رقمی" style="min-width:240px" maxlength="12">
+    <button class="btn">استعلام</button>
+  </form>
+</div>
+
+{% if data %}
+  {% if data.error and not data.user %}
+    <div class="msg-err">{{ data.error }}</div>
+  {% else %}
+    {% if data.user %}
+    <div class="card">
+      <h3>🧑 پرونده کاربر</h3>
+      <div class="fgrid">
+        <div><span class="muted small">نام و نام خانوادگی</span><div><b>{{ data.user.name }} {{ data.user.family }}</b></div></div>
+        <div><span class="muted small">کد ملی</span><div class="num">{{ data.user.nid }}</div></div>
+        <div><span class="muted small">نام کاربری</span><div>{{ data.user.username }}</div></div>
+        <div><span class="muted small">جنسیت</span><div>{{ data.user.gender or '—' }}</div></div>
+        <div><span class="muted small">تاریخ تولد</span><div>{{ data.user.birthday }}</div></div>
+        <div><span class="muted small">موبایل</span><div class="num">{{ data.user.mobile or '—' }}{% if data.user.mobile2 %} / {{ data.user.mobile2 }}{% endif %}</div></div>
+        <div><span class="muted small">استان</span><div>{{ data.user.province }}</div></div>
+        <div><span class="muted small">وضعیت تاهل</span><div>{{ data.user.marriage }}</div></div>
+        <div><span class="muted small">تحصیلات</span><div>{{ data.user.edu }}</div></div>
+        <div><span class="muted small">تاریخ ثبت‌نام</span><div>{{ data.user.signup }}</div></div>
+        <div><span class="muted small">آخرین ورود</span><div>{{ data.user.lastlogin }}</div></div>
+        <div><span class="muted small">وضعیت</span><div>
+          <span class="badge {{ 'ok' if data.user.confirm|string == 'بله' else 'wait' }}">تایید: {{ data.user.confirm }}</span>
+          <span class="badge {{ 'bad' if data.user.blocked|string == 'بله' else 'ok' }}">مسدود: {{ data.user.blocked }}</span>
+        </div></div>
+      </div>
+      {% if data.roles %}
+      <h3 style="margin-top:14px">🎭 نقش‌ها و قراردادها</h3>
+      <div class="tbl-wrap"><table class="data">
+        <thead><tr><th>نقش</th><th>سطح</th><th>شروع</th><th>پایان</th><th>تعلیق</th></tr></thead>
+        <tbody>{% for r in data.roles %}<tr><td>{{ r.title or '—' }}</td><td>{{ r.level }}</td><td>{{ r.start }}</td><td>{{ r.end }}</td><td>{{ r.suspended }}</td></tr>{% endfor %}</tbody>
+      </table></div>
+      {% endif %}
+    </div>
+    {% endif %}
+
+    <div class="card">
+      <h3>🗓️ جلسات مشاوره ({{ data.events|length }})</h3>
+      <div class="tbl-wrap"><table class="data">
+        <thead><tr><th>شناسه</th><th>خدمت</th><th>تاریخ شروع</th><th>پایان</th><th>مرکز</th><th>مشاور</th><th>مراحل تایید</th><th>کیس حاد</th></tr></thead>
+        <tbody>
+          {% for e in data.events %}
+          <tr><td class="num">{{ e.id }}</td><td>{{ e.service }}</td><td>{{ e.start }}</td>
+              <td>{{ e.end }}</td><td>{{ e.center }}</td><td>{{ e.adviser }}</td>
+              <td><span class="badge {{ 'ok' if e.confirms|int >= 5 else 'wait' }}">{{ e.confirms }} از ۵</span></td>
+              <td>{{ e.ems }}</td></tr>
+          {% else %}<tr><td colspan="8" class="muted">جلسه‌ای یافت نشد</td></tr>{% endfor %}
+        </tbody>
+      </table></div>
+    </div>
+
+    <div class="flex">
+      <div class="card" style="flex:1;min-width:340px">
+        <h3>🚨 موارد حاد ({{ data.ems|length }})</h3>
+        <table class="data"><thead><tr><th>شناسه</th><th>تاریخ</th><th>شدت خطر</th><th>وضعیت</th><th>مبلغ</th><th>پرداخت</th></tr></thead>
+        <tbody>{% for r in data.ems %}<tr><td class="num">{{ r.id }}</td><td>{{ r.date }}</td><td>{{ r.risk }}</td><td>{{ r.status }}</td><td class="num">{{ r.amount }}</td><td>{{ r.pay }}</td></tr>{% else %}<tr><td colspan="6" class="muted">موردی نیست</td></tr>{% endfor %}</tbody></table>
+      </div>
+      <div class="card" style="flex:1;min-width:340px">
+        <h3>🔗 ارجاع‌های سها ({{ data.referrs|length }})</h3>
+        <table class="data"><thead><tr><th>شناسه</th><th>کد ارجاع</th><th>خدمت</th><th>وضعیت</th><th>نوع</th><th>تاریخ</th></tr></thead>
+        <tbody>{% for r in data.referrs %}<tr><td class="num">{{ r.id }}</td><td class="num">{{ r.refid }}</td><td>{{ r.service }}</td><td>{{ r.status }}</td><td>{{ r.type }}</td><td>{{ r.date }}</td></tr>{% else %}<tr><td colspan="6" class="muted">موردی نیست</td></tr>{% endfor %}</tbody></table>
+      </div>
+    </div>
+
+    <div class="flex">
+      <div class="card" style="flex:1;min-width:340px">
+        <h3>📌 رزروها ({{ data.reserves|length }})</h3>
+        <table class="data"><thead><tr><th>شناسه</th><th>تاریخ</th><th>مشاور</th><th>جلسه</th></tr></thead>
+        <tbody>{% for r in data.reserves %}<tr><td class="num">{{ r.id }}</td><td>{{ r.date }}</td><td>{{ r.adviser }}</td><td class="num">{{ r.event }}</td></tr>{% else %}<tr><td colspan="4" class="muted">موردی نیست</td></tr>{% endfor %}</tbody></table>
+      </div>
+      <div class="card" style="flex:1;min-width:340px">
+        <h3>💬 پیامک‌ها ({{ data.sms|length }})</h3>
+        <table class="data"><thead><tr><th>شناسه</th><th>شماره</th><th>متن</th><th>وضعیت</th><th>تاریخ</th></tr></thead>
+        <tbody>{% for r in data.sms %}<tr><td class="num">{{ r.id }}</td><td class="num">{{ r.number }}</td><td>{{ r.message }}</td><td>{{ r.status }}</td><td>{{ r.date }}</td></tr>{% else %}<tr><td colspan="5" class="muted">موردی نیست</td></tr>{% endfor %}</tbody></table>
+      </div>
+    </div>
+
+    {% if data.taxes or data.career %}
+    <div class="flex">
+      {% if data.taxes %}
+      <div class="card" style="flex:1;min-width:340px">
+        <h3>🧾 مالیات ({{ data.taxes|length }})</h3>
+        <table class="data"><thead><tr><th>سال</th><th>ماه</th><th>مالیات</th><th>حق‌الزحمه</th><th>معافیت</th></tr></thead>
+        <tbody>{% for r in data.taxes %}<tr><td>{{ r.year }}</td><td>{{ r.month }}</td><td class="num">{{ r.tax }}</td><td class="num">{{ r.total }}</td><td>{{ r.exempt }} ماه</td></tr>{% endfor %}</tbody></table>
+      </div>
+      {% endif %}
+      {% if data.career %}
+      <div class="card" style="flex:1;min-width:340px">
+        <h3>💼 مشاوره شغلی ({{ data.career|length }})</h3>
+        <table class="data"><thead><tr><th>شناسه</th><th>تاریخ درخواست</th><th>گروه هدف</th><th>وضعیت</th><th>اداره</th></tr></thead>
+        <tbody>{% for r in data.career %}<tr><td class="num">{{ r.id }}</td><td>{{ r.date }}</td><td>{{ r.target }}</td><td>{{ r.status }}</td><td>{{ r.office }}</td></tr>{% endfor %}</tbody></table>
+      </div>
+      {% endif %}
+    </div>
+    {% endif %}
+  {% endif %}
+{% endif %}
+{% endblock %}

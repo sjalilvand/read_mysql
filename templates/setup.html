@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% set nav = 'setup' %}
+{% block title %}منبع داده — راه زندگی{% endblock %}
+{% block body %}
+<div id="setupRoot">
+<h1>⚙️ منبع داده و ایمپورت</h1>
+
+{% if current %}
+<div class="msg-ok">
+  منبع فعال: <code>{{ current }}</code>
+  <div class="small muted" style="margin-top:6px">برای تغییر منبع، از گزینه‌های زیر استفاده کنید.</div>
+</div>
+{% else %}
+<div class="alert warn-big"><span>هیچ منبع داده‌ای انتخاب نشده است — یکی از گزینه‌های زیر را انتخاب کنید.</span></div>
+{% endif %}
+
+<div class="card">
+  <h3>📦 دیتابیس‌های آماده (بدون نیاز به استخراج)</h3>
+  {% if sources.db %}
+    {% for s in sources.db %}
+    <div class="src">
+      <div>
+        <b>SQLite</b> <span class="small muted">({{ '{:.2f}'.format(s.size / 1073741824) }} گیگابایت)</span>
+        {% if s.note %}<span class="tag">{{ s.note }}</span>{% endif %}
+        <div class="path">{{ s.path }}</div>
+      </div>
+      <div class="flex">
+        {% if current == s.path %}<span class="badge ok">فعال</span>{% endif %}
+        <button class="btn use-db" data-path="{{ s.path }}">استفاده از این دیتابیس</button>
+      </div>
+    </div>
+    {% endfor %}
+  {% else %}
+    <div class="muted small">دیتابیس آماده‌ای پیدا نشد (مثلاً خروجی sql_viewer).</div>
+  {% endif %}
+</div>
+
+<div class="card">
+  <h3>📄 فایل‌های بکاپ SQL</h3>
+  {% if sources.sql %}
+    {% for s in sources.sql %}
+    <div class="src">
+      <div>
+        <b>{{ s.path|basename }}</b> <span class="small muted">({{ '{:.2f}'.format(s.size / 1073741824) }} گیگابایت)</span>
+        {% if s.note %}<span class="tag">{{ s.note }}</span>{% endif %}
+        <div class="path">{{ s.path }}</div>
+      </div>
+      <button class="btn import-sql" data-path="{{ s.path }}">استخراج از این بکاپ</button>
+    </div>
+    {% endfor %}
+  {% else %}
+    <div class="muted small">فایل .sql در مسیرهای معمول پیدا نشد. فایل بکاپ را کنار برنامه یا در پوشه <code>backups/</code> بگذارید.</div>
+  {% endif %}
+  <div id="impBox" class="{{ 'hidden' if not (status.state in ('importing','optimizing')) }}">
+    <h3 style="margin-top:16px">پیشرفت عملیات</h3>
+    <div class="progress" id="impProgress"><div style="width:0%"></div><span>۰٪</span></div>
+    <div class="small muted" id="impNote" style="margin-top:6px">استخراج ممکن است چند دقیقه طول بکشد؛ این صفحه را نبندید.</div>
+  </div>
+</div>
+
+{% if current %}
+<div class="card">
+  <h3>🚀 بهینه‌سازی سرعت گزارش‌ها</h3>
+  <div class="small muted" style="margin-bottom:10px">
+    ساخت ایندکس روی ستون‌های پرکاربرد (کد ملی، مشاور، مرکز، تاریخ و...) — یک‌بار انجام دهید؛
+    روی دیتابیس بزرگ چند دقیقه زمان می‌برد.
+  </div>
+  <button class="btn sec" id="optimizeBtn">ساخت ایندکس‌ها برای سرعت</button>
+</div>
+{% endif %}
+</div>
+{% endblock %}

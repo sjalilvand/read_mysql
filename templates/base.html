@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}سامانه گزارش‌گیری راه زندگی{% endblock %}</title>
+<link rel="stylesheet" href="/static/style.css?v=13">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧠</text></svg>">
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">
+    <span class="logo">🧠</span>
+    <div>
+      <div class="t1">سامانه مراکز خدمات روانشناسی و مشاوره راه زندگی</div>
+      <div class="t2">گزارش‌گیری و تحلیل داده — نسخه ۱٫۳</div>
+    </div>
+  </div>
+  <div class="top-actions">
+    {% if ready %}<span class="chip ok">داده فعال</span>{% else %}<span class="chip warn">بدون داده</span>{% endif %}
+    <button id="themeToggle" class="icon-btn" title="حالت شب/روز">🌙</button>
+  </div>
+</header>
+<div class="shell">
+  <aside class="sidebar">
+    <nav>
+      <a href="/" class="{{ 'active' if nav=='dash' }}">📊 داشبورد مدیریتی</a>
+      <a href="/reports" class="{{ 'active' if nav=='reports' }}">🧾 گزارش‌ساز و گزارش‌های آماده</a>
+      <a href="/tables" class="{{ 'active' if nav=='tables' }}">🗄️ مرور داده‌ها</a>
+      <a href="/person" class="{{ 'active' if nav=='person' }}">🔍 استعلام مددجو</a>
+      <a href="/setup" class="{{ 'active' if nav=='setup' }}">⚙️ منبع داده و ایمپورت</a>
+    </nav>
+    <div class="side-note">
+      کار با بکاپ انجام می‌شود؛ تغییری در سامانه اصلی ایجاد نمی‌شود.
+    </div>
+  </aside>
+  <main class="content">
+    {% if not ready and nav != 'setup' %}
+    <div class="alert warn-big">
+      هنوز منبع داده‌ای انتخاب نشده است.
+      <a class="btn" href="/setup">تنظیم منبع داده</a>
+    </div>
+    {% endif %}
+    {% block body %}{% endblock %}
+  </main>
+</div>
+<script src="/static/jalali.js?v=13"></script>
+<script src="/static/charts.js?v=13"></script>
+{% block scripts %}{% endblock %}
+<script src="/static/app.js?v=13"></script>
+</body>
+</html>

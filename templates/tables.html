@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% set nav = 'tables' %}
+{% block title %}مرور داده‌ها — راه زندگی{% endblock %}
+{% block body %}
+<h1>🗄️ مرور داده‌ها</h1>
+<div class="card">
+  <b>{{ tables|length }}</b> جدول — مجموع <b class="num">{{ '{:,}'.format(total_rows) }}</b> ردیف
+  <span class="small muted">(اطلاعات شمارش از زمان استخراج)</span>
+</div>
+<div class="tbl-wrap">
+  <table class="data">
+    <thead><tr><th>جدول</th><th>توضیح</th><th>ردیف‌ها</th><th>ستون‌ها</th><th></th></tr></thead>
+    <tbody>
+      {% for t in tables %}
+      <tr>
+        <td><a href="/table/{{ t.name }}"><code>{{ t.name }}</code></a><div class="small muted">{{ t.label }}</div></td>
+        <td class="small">{{ t.desc }}</td>
+        <td class="num">{{ '{:,}'.format(t.rows) }}</td>
+        <td class="num">{{ t.cols }}</td>
+        <td><a class="btn gray" href="/table/{{ t.name }}/export.csv">CSV</a></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

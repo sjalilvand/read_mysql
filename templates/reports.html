@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+{% set nav = 'reports' %}
+{% block title %}گزارش‌ساز — راه زندگی{% endblock %}
+{% block body %}
+<h1>🧾 گزارش‌ساز</h1>
+
+<h2 class="cat-title">گزارش‌های آماده (مطابق صفحات برنامه اصلی)</h2>
+{% for cat, items in categories.items() %}
+<div class="cat-title small muted">{{ cat }}</div>
+<div class="preset-grid">
+  {% for pr in items %}
+  <a href="/preset/{{ pr.key }}" class="preset-card" style="text-decoration:none;color:inherit">
+    <span class="ic">{{ pr.icon }}</span>
+    <b>{{ pr.title }}</b>
+    <p>{{ pr.desc }}</p>
+  </a>
+  {% endfor %}
+</div>
+{% endfor %}
+
+<h2 class="cat-title">گزارش‌های ذخیره‌شده من</h2>
+{% if saved %}
+<div class="preset-grid">
+  {% for s in saved %}
+  <div class="preset-card">
+    <b>💾 {{ s.name }}</b>
+    <p>جدول: {{ s.spec.table }} — فیلتر: {{ s.spec.filters|length }} مورد</p>
+    <div class="flex" style="margin-top:8px">
+      <button class="btn sec load-saved" data-name="{{ s.name }}">بارگذاری در سازنده</button>
+      <button class="btn gray del-saved" data-name="{{ s.name }}">حذف</button>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<div class="muted small">گزارشی ذخیره نشده — از سازنده پایین با دکمه «ذخیره گزارش» ذخیره کنید.</div>
+{% endif %}
+
+<h2 class="cat-title">سازنده آزاد گزارش</h2>
+<div class="card">
+  <div class="builder-head">
+    <label class="f">جدول
+      <select id="bTable" style="min-width:220px"></select>
+    </label>
+    <label class="f">جستجوی سراسری
+      <input type="text" id="bSearch" placeholder="متن جستجو…">
+    </label>
+    <label class="f">از تاریخ
+      <input type="text" id="bDateFrom" placeholder="۱۴۰۴/۰۱/۰۱">
+    </label>
+    <label class="f">تا تاریخ
+      <input type="text" id="bDateTo" placeholder="۱۴۰۴/۱۲/۲۹">
+    </label>
+    <label class="f">تعداد ردیف
+      <select id="bLimit">
+        <option>50</option><option selected>200</option><option>1000</option><option>5000</option>
+      </select>
+    </label>
+  </div>
+
+  <div class="small muted" style="margin:6px 0 4px">ستون‌ها (خالی = همه):</div>
+  <div id="bCols" class="cols-box"></div>
+
+  <div class="small muted" style="margin:12px 0 4px">فیلترها:</div>
+  <div class="frow">
+    <select id="bFilterCol" style="max-width:260px"></select>
+    <button class="btn sec" id="bAddFilter">+ افزودن فیلتر</button>
+  </div>
+  <div id="bFilters"></div>
+
+  <div class="small muted" style="margin:12px 0 4px">گروه‌بندی و تجمیع (اختیاری):</div>
+  <div class="frow">
+    <select id="bGroupBy" style="max-width:240px"><option value="">— بدون گروه‌بندی</option></select>
+    <select id="bGroupMode">
+      <option value="value">به تفکیک مقدار</option>
+      <option value="jmonth">به تفکیک ماه شمسی</option>
+      <option value="jyear">به تفکیک سال شمسی</option>
+    </select>
+  </div>
+  <div class="frow">
+    <select id="bAggCol" style="max-width:220px"></select>
+    <select id="bAggFn">
+      <option value="count">تعداد</option><option value="sum">جمع</option>
+      <option value="avg">میانگین</option><option value="min">کمینه</option>
+      <option value="max">بیشینه</option>
+    </select>
+    <button class="btn sec" id="bAddAgg">+ افزودن تجمیع</button>
+    <span id="bAggList" class="flex"></span>
+  </div>
+
+  <div class="frow" style="margin-top:12px">
+    <label class="f">مرتب‌سازی بر اساس
+      <input type="text" id="bSortCol" placeholder="نام ستون (اختیاری)">
+    </label>
+    <label class="f">جهت
+      <select id="bSortDir"><option value=desc>نزولی</option><option value=asc>صعودی</option></select>
+    </label>
+  </div>
+
+  <div class="flex" style="margin-top:14px">
+    <button class="btn" id="bRun">▶ اجرای گزارش</button>
+    <button class="btn green" id="bCsv">خروجی CSV</button>
+    <button class="btn green" id="bXlsx">خروجی اکسل</button>
+    <button class="btn gray" id="bSave">💾 ذخیره گزارش</button>
+    <button class="btn sec" id="bPin">📌 سنجاق به داشبورد</button>
+  </div>
+</div>
+
+<div id="builderRoot"></div>
+{% endblock %}
+{% block scripts %}
+<script>
+  window.META_TABLES = {{ meta_tables | tojson }};
+  window.SAVED_SPECS = {{ saved_specs | tojson }};
+</script>
+{% endblock %}

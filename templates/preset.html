@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% set nav = 'reports' %}
+{% block title %}{{ preset.title }} — راه زندگی{% endblock %}
+{% block body %}
+<h1>{{ preset.icon }} {{ preset.title }}</h1>
+<div class="small muted" style="margin:-10px 0 14px">{{ preset.desc }}</div>
+
+<div class="card no-print">
+  <h3>فیلترها</h3>
+  <div class="fgrid" id="presetFilters"></div>
+  <div class="flex" style="margin-top:14px">
+    <button class="btn" id="presetRun">▶ اعمال فیلتر</button>
+    <button class="btn gray" id="presetPrint">🖨️ چاپ / PDF</button>
+    <button class="btn green" id="presetCsv">خروجی CSV</button>
+    <button class="btn green" id="presetXlsx">خروجی اکسل</button>
+    <label class="f">تعداد ردیف
+      <select id="presetLimit">
+        <option>50</option><option selected>200</option><option>1000</option><option>5000</option>
+      </select>
+    </label>
+  </div>
+  <div class="small muted" style="margin-top:8px">تاریخ‌ها را شمسی وارد کنید (مثال: ۱۴۰۴/۰۷/۱۲ یا 1404/7/12)</div>
+</div>
+
+<div id="presetRoot"></div>
+
+<div class="small muted" style="margin-top:10px">
+  <a href="/reports">← بازگشت به فهرست گزارش‌ها</a>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+  window.PRESET = {{ preset | tojson }};
+  window.PRESET_KEY = {{ key | tojson }};
+</script>
+<script src="/static/charts.js"></script>
+{% endblock %}

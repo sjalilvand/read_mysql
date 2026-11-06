@@ -1,0 +1,939 @@
+ساختار کامل دیتابیس — سامانه مراکز خدمات روانشناسی و مشاوره «راه زندگی»
+استخراج‌شده از بکاپ MySQL واقعی (app2_backup) — برای تحلیل توسط هوش مصنوعی
+====================================================================================================
+تعداد جدول‌ها: 75   |   مجموع ردیف‌ها: 5,905,019
+سرویس خارجی مرتبط: سامانه سها (ارجاع، نوبت‌دهی و پرداخت وزارت بهداشت)
+نکته: ایندکس‌ها و کلیدهای خارجی سطح MySQL در بکاپ وجود دارد؛ روابط منطقی ستون «رابطه» هر ستون آمده است.
+
+فهرست کلی جدول‌ها (مرتب بر اساس حجم داده):
+----------------------------------------------------------------------------------------------------
+جدول                            نام فارسی                        ردیف‌ها  ستون‌ها  توضیح
+----------------------------------------------------------------------------------------------------
+Log                             لاگ فعالیت کاربران             1,567,061        7  رخدادهای سامانه (ورود، پذیرش، API و...)
+ApiReports                      گزارش‌های API                    806,544        6  درخواست‌های گزارش‌گیری از سرویس سها و وضعیت آن‌ها
+EventComments                   یادداشت‌های جلسه                 579,200        5  یادداشت مشاور روی هر جلسه
+Events                          جلسات مشاوره                     549,848       41  جدول اصلی — همه جلسات فردی و خدمات
+EventPersonal                   موضوع جلسه                       524,790        0  موضوع (ازدواج، تحصیلی و...) و شرح جلسه
+SMS                             پیامک‌ها                         452,175        9  همه پیامک‌های ارسالی سامانه
+Referrs                         ارجاع‌های سها                    362,410       12  ارجاع دریافتی از سامانه سها
+Users                           کاربران                          320,471       28  همه کاربران (مراجع، مشاوران، مدیران و...)
+EventReserves                   رزرو جلسات                       315,056        5  رزروهای ثبت‌شده وقت مشاوره
+_fix_endrefer                   جدول فنی اصلاح ارجاع             137,981        0  جدول کمکی فنی
+GroupEventMember                حضور در جلسات گروهی               53,746        8  افراد حاضر در هر جلسه گروهی
+Sessions                        نشست‌های ورود                     52,094        6  نشست‌های فعال کاربران
+GroupMembers                    اعضای گروه‌ها                     46,202        6  اعضای ثبت‌شده هر گروه
+EventPsychology                 شرح حال بالینی جلسه               24,874       34  معاینه وضعیت روانی (MSE) و شرح حال کامل
+EventReferrs                    ارجاع جلسه به مشاور دیگر          22,364        0  ارجاع داخلی جلسات بین مشاوران
+ConsultantCourses               دوره‌های آموزشی مشاوران           14,009        0  دوره‌های گذرانده‌شده مشاوران
+JobsList                        فهرست مشاغل                       12,380        0  عناوین شغلی نظام صنفی
+EventQuizzes                    آزمون‌های جلسه                     8,740        0  آزمون‌های تجویزشده در جلسه
+EventDisorders                  اختلالات جلسه                      8,299        0  اختلالات ثبت‌شده برای هر جلسه
+Groups                          گروه‌ها                            6,415        8  گروه‌های مشاوره‌ای و آموزشی
+GroupEvents                     جلسات گروهی                        6,364       25  جلسات برگزارشده گروه‌ها
+EventsEms                       موارد حاد                          5,202       16  موارد حاد (آسیب به خود) و فرآیند بررسی و پرداخت
+ConsultantTax                   مالیات مشاوران                     4,887       11  مالیات محاسبه‌شده ماهانه مشاوران
+UserRoles                       نقش‌ها و قراردادهای کاربران        3,030       10  دسترسی‌ها و قرارداد هر کاربر
+ConsultantExperience            سوابق کاری مشاوران                 2,112        0  تجربه‌های کاری مشاوران
+ConsultantTeachingExperience    سوابق تدریس مشاوران                2,061        0  تجربه‌های تدریس مشاوران
+ReferrsRequest                  درخواست‌های رزرو کاربران           1,878        9  درخواست رزروی که کاربران ثبت کرده‌اند
+ReferrFollowUps                 پیگیری ارجاع‌ها                    1,731        5  یادداشت‌های پیگیری ارجاع سها
+EventNeuroFeedback              جلسات نوروفیدبک                    1,341       19  پروتکل و نتایج قبل/بعد نوروفیدبک
+Files                           فایل‌ها                            1,264        5  فایل‌های بارگذاری‌شده (رزومه، نقشه مغزی و...)
+ConsultantEducation             تحصیلات مشاوران                    1,252       10  مدارک تحصیلی مشاوران
+CenterBankAccount               حساب‌های بانکی مراکز               1,204        0  اطلاعات حساب بانکی مراکز برای تسویه
+Cities                          شهرستان‌ها                         1,121        4  شهرستان‌های کشور با کد API سها
+CareerCounseling                مشاوره شغلی (اداره کار)            1,056       20  درخواست‌های مشاوره شغلی از سامانه بهزیستی/اداره کار
+Centers                         مراکز و کلینیک‌ها                    902       10  فهرست مراکز خدمات مشاوره سراسر کشور
+EventChildPsychology            ارزیابی روانشناسی کودک               711        0  فرم مشاهده بالینی کودک (ضمن جلسه)
+EventEmsComments                نظرات موارد حاد                      702        5  گزارش کمیسیون و نظرات روی مورد حاد
+ConsultantHistory               تاریخچه اشتغال مشاوران               666        0  تاریخچه همکاری مشاوران
+Disorders                       اختلالات                             513        0  طبقه‌بندی درختی اختلالات روانی
+BudgetCity                      تخصیص سهمیه به شهرستان               488        0  سهم تخصیصی هر شهرستان از سهمیه‌ها
+ApiStates                       وضعیت API — شهرها                    438        0  کد شهرها برای فراخوانی API سها
+Messages                        پیام‌های داخلی                       298       10  پیام‌های بین کاربران سامانه
+EventMedicine                   داروهای تجویزی                       217        0  داروهای تجویزشده در جلسه روانپزشکی
+EventHeadMap                    نقشه مغزی                            178        5  نتایج نقشه‌برداری مغز (QEEG)
+BudgetProvince                  تخصیص سهمیه به استان                 165       10  سهم تخصیصی هر استان از سهمیه‌ها
+CorporateContractServices       خدمات و تعرفه قراردادها              139       14  تعرفه هر سطح مشاور برای هر خدمت در قرارداد
+UserMFA                         رمز دوم کاربران                      103        0  تنظیمات ورود دومرحله‌ای
+BudgetCenter                    تخصیص سهمیه به مرکز                   69        0  سهم تخصیصی هر مرکز از سهمیه‌ها
+CorporateContractCoupons        کدهای تخفیف قرارداد                   55        0  کوپن‌های شناسایی مشمولان قرارداد
+CenterEquipments                تجهیزات مراکز                         39        0  تجهیزات ثبت‌شده هر مرکز
+Provinces                       استان‌ها                              31        4  استان‌های کشور با کد API
+Settings                        تنظیمات سیستم                         24        2  کلید/مقدار تنظیمات
+CorporateContracts              قراردادهای سازمانی                    22        6  قراردادهای تشخیص خودکار مشمولان
+Roles                           نقش‌ها                                21        3  نقش‌های سامانه
+Services                        خدمات                                 15        5  انواع خدمت (مشاوره فردی، گروهی، نوروفیدبک و...)
+EquipmentItems                  اقلام تجهیزات                         13        0  اقلام استاندارد تجهیزات مراکز
+Education                       مدارک تحصیلی                           9        2  سطح تحصیلات
+Budget                          سهمیه‌های خدمات (بودجه)                6       11  سهمیه‌های کشوری خدمات فردی/گروهی/شغلی
+CorporateCustomers              مشتریان سازمانی                        6        4  سازمان‌های طرف قرارداد
+Marriage                        وضعیت تاهل                             6        2  انواع وضعیت تاهل
+Religion                        ادیان                                  6        0  فهرست ادیان
+CenterCategories                دسته‌بندی مراکز                        5        0  انواع استقرار مرکز (مستقر در اداره، مستقل و...)
+SpecialOccasions                مناسبت‌ها                              4        7  بنر مناسبت‌های نمایشی
+InvitePersons                   کاربران معرفی‌شده                      3       14  افراد معرفی‌شده از سوی گروه‌ها/سازمان‌ها
+ApiTokens                       توکن‌های API                           1        0  توکن‌های احراز هویت سرویس‌های خارجی
+CorporateContractNIDs           کدهای ملی قرارداد                      1        0  مشمولان قرارداد سازمانی بر اساس کد ملی
+UserTicket                      تیکت‌های پشتیبانی                      1        0  تیکت‌های ثبت‌شده کاربران
+ConsultScope                    حوزه‌های مشاوره                        0        0  حوزه‌های تخصصی مشاوره
+Expenses                        هزینه‌ها                               0       13  هزینه‌های ثبت‌شده مراکز
+GroupEventReserves              رزرو جلسات گروهی                       0        0  رزروهای جلسات گروهی
+Helps                           راهنماهای سامانه                       0        3  فایل‌های راهنمای هر نقش
+Incomes                         درآمدها                                0       11  درآمدهای ثبت‌شده مراکز
+Notifications                   اعلان‌ها                               0        0  اعلان‌های سیستمی
+NotificationsQueue              صف اعلان‌ها                            0        0  اعلان‌های در صف ارسال
+UserPasskeys                    کلیدهای عبور                           0        0  Passkeyهای ثبت‌شده کاربران
+
+====================================================================================================
+جزئیات هر جدول (ستون‌ها، نوع داده و روابط):
+====================================================================================================
+
+■ Log — لاگ فعالیت کاربران
+  توضیح: رخدادهای سامانه (ورود، پذیرش، API و...)
+  ردیف‌ها: 1,567,061
+  ستون تاریخ اصلی: Timestamp
+  ستون‌ها:
+    - id                          int NOT NULL AUTO_INCREMENT (شناسه)
+    - uid                         int NOT NULL           (کاربر)  → FK به Users
+    - Category                    varchar(255)           (دسته)
+    - Description                 text                   (توضیح)
+    - Level                       tinyint NOT NULL       (سطح)
+    - IP                          varchar(255) NOT NULL 
+    - Timestamp                   timestamp NOT NULL     (تاریخ)
+
+■ ApiReports — گزارش‌های API
+  توضیح: درخواست‌های گزارش‌گیری از سرویس سها و وضعیت آن‌ها
+  ردیف‌ها: 806,544
+  ستون تاریخ اصلی: CreateTime
+  ستون‌ها:
+    - id                          int NOT NULL AUTO_INCREMENT (شناسه)
+    - Type                        varchar(255) NOT NULL  (نوع)
+    - Data                        json NOT NULL          (داده)
+    - Efforts                     tinyint                (تلاش‌ها)
+    - CreateTime                  datetime NOT NULL      (ایجاد)
+    - UpdateTime                  datetime               (بروزرسانی)
+
+■ EventComments — یادداشت‌های جلسه
+  توضیح: یادداشت مشاور روی هر جلسه
+  ردیف‌ها: 579,200
+  ستون‌ها:
+    - id                          int NOT NULL AUTO_INCREMENT (شناسه)
+    - EventID                     int NOT NULL           (جلسه)  → FK به Events
+    - ConsultantNID               bigint(10) NOT NULL    (مشاور)
+    - Comment                     text                   (یادداشت)
+    - DateTime                    datetime NOT NULL      (تاریخ)
+
+■ Events — جلسات مشاوره
+  توضیح: جدول اصلی — همه جلسات فردی و خدمات
+  ردیف‌ها: 549,848
+  ستون تاریخ اصلی: StartDate
+  ستون‌ها:
+    - id                          int NOT NULL AUTO_INCREMENT (شناسه)
+    - UserID                      int NOT NULL           (مراجع)  → FK به Users
+    - NID                         bigint(10) NOT NULL    (کد ملی مراجع)  → FK به Users
+    - TrackingCode                int                    (کد رهگیری)
+    - CenterID                    int NOT NULL           (مرکز)  → FK به Centers
+    - ServiceID                   int NOT NULL           (خدمت)  → FK به Services
+    - ContractID                  int NOT NULL           (قرارداد)  → FK به CorporateContracts
+    - RefID                       bigint                 (کد ارجاع سها)
+    - EmdadCheck                  bit(1) NOT NULL        (بررسی امداد)
+    - CorporateContractServiceID  int NOT NULL           (سرویس قرارداد)
+    - UserTariff                  int NOT NULL           (تعرفه کاربر)
+    - EMS                         bit(1) NOT NULL        (کیس حاد)
+    - Level                       int NOT NULL           (سطح مشاور)
+    - CenterAdminID               int NOT NULL           (مدیر مرکز)  → FK به Users
+    - SupervisorID                int NOT NULL           (ناظر)  → FK به Users
+    - AcceptorID                  int NOT NULL           (مشاور)  → FK به Users
+    - AcceptorFee                 int NOT NULL           (حق‌الزحمه مشاور)
+    - SecretaryFee                int NOT NULL           (حق دبیرخانه)  [حساس — پنهان‌سازی]
+    - AcceptorCodeName            varchar(100) NOT NULL  (کد پذیرنده)
+    - AcceptorLevel               tinyint NOT NULL       (سطح پذیرنده)
+    - SupervisorFee               int NOT NULL           (حق‌الزحمه ناظر)
+    - CenterFee                   int NOT NULL           (سهم مرکز)
+    - AdminFee                    int NOT NULL           (سهم مدیریت)
+    - CenterAdminConfirmUserID    int                    (تایید مدیر مرکز)  → FK به Users
+    - CenterAdminConfirmDateTime  datetime               (زمان تایید مدیر مرکز)
+    - CenterTechConfirmUserID     int                    (تایید مسئول فنی)  → FK به Users
+    - CenterTechConfirmDateTime   datetime               (زمان تایید مسئول فنی)
+    - OperatorConfirmUserID       int                    (تایید نظارت حرفه‌ای)  → FK به Users
+    - OperatorConfirmDateTime     datetime               (زمان تایید نظارت حرفه‌ای)
+    - ProvinceSupervisorConfirmUserIDint                    (تایید ناظر استان)  → FK به Users
+    - ProvinceSupervisorConfirmDateTimedatetime               (زمان تایید ناظر استان)
+    - SupervisorConfirmUserID     int                    (تایید ناظر کشور)  → FK به Users
+    - SupervisorConfirmDateTime   datetime               (زمان تایید ناظر کشور)
+    - StartDate                   datetime               (تاریخ شروع)
+    - EndDate                     datetime               (تاریخ پایان)
+    - Weight                      decimal(10,1) NOT NULL (وزن خدمت)
+    - BudgetUsed                  tinyint NOT NULL       (مصرف سهمیه)
+    - BudgetReserved              tinyint NOT NULL       (رزرو سهمیه)
+    - RejectedByUserID            int                    (ردکننده)  → FK به Users
+    - RejectedAt                  datetime               (زمان رد)
+    - RejectedComment             text                   (دلیل رد)
+
+■ EventPersonal — موضوع جلسه
+  توضیح: موضوع (ازدواج، تحصیلی و...) و شرح جلسه
+  ردیف‌ها: 524,790
+  ستون‌ها: (در نمونه موجود نیست — از متادیتای برنامه در زمان اجرا خوانده می‌شود)
+
+■ SMS — پیامک‌ها
+  توضیح: همه پیامک‌های ارسالی سامانه
+  ردیف‌ها: 452,175
+  ستون تاریخ اصلی: CreateTime
+  ستون‌ها:
+    - id                          int NOT NULL AUTO_INCREMENT (شناسه)
+    - SmsSender                   int NOT NULL           (فرستنده)  → FK به Users
+    - SmsReceiver                 int NOT NULL           (گیرنده)  → FK به Users
+    - Number                      bigint(11) NOT NULL    (شماره)
+    - Message                     varchar(255) NOT NULL  (متن)
+    - Response                    text                   (پاسخ)
+    - Efforts                     int NOT NULL           (تلاش‌ها)
+    - UpdateTime                  datetime NOT NULL      (آخرین بروزرسانی)
+    - CreateTime                  datetime NOT NULL      (تاریخ ارسال)
+
+■ Referrs — ارجاع‌های سها
+  توضیح: ارجاع دریافتی از سامانه سها
+  ردیف‌ها: 362,410
+  ستون تاریخ اصلی: CreationDate
+  ستون‌ها:
+    - id                          int NOT NULL AUTO_INCREMENT (شناسه)
+    - RefID                       bigint NOT NULL        (کد ارجاع سها)
+    - UserID                      int NOT NULL           (کاربر)  → FK به Users
+    - ServiceID                   int NOT NULL           (خدمت)  → FK به Services
+    - Description                 text                   (توضیحات)
+    - IsReferr                    bit(1) NOT NULL        (ارجاع‌شده)
+    - ProvinceID                  int NOT NULL           (استان)  → FK به Provinces
+    - CityID                      int NOT NULL           (شهرستان)  → FK به Cities
+    - CenterID                    int                    (مرکز)  → FK به Centers
+    - AcceptorID                  int                    (مشاور پذیرنده)  → FK به Users
+    - AdminReferrerID             int                    (معرف اداری)  → FK به Users
+    - CreationDate                datetime NOT NULL      (تاریخ ایجاد)
+
+■ Users — کاربران
+  توضیح: همه کاربران (مراجع، مشاوران، مدیران و...)
+  ردیف‌ها: 320,471
+  ستون تاریخ اصلی: SignupDate
+  ستون‌ها:
+    - id                          int NOT NULL AUTO_INCREMENT (شناسه)
+    - NID                         bigint(10) NOT NULL    (کد ملی)
+    - DetailCode                  varchar(50)            (کد تفصیلی)
+    - Username                    varchar(255) NOT NULL  (نام کاربری)
+    - Password                    varchar(255) NOT NULL   [حساس — پنهان‌سازی]
+    - Name                        varchar(255) NOT NULL  (نام)
+    - Family                      varchar(255) NOT NULL  (نام خانوادگی)
+    - Father                      varchar(255) NOT NULL  (نام پدر)
+    - Birthday                    date                   (تاریخ تولد)
+    - Religion                    varchar(255) NOT NULL  (دین)
+    - MarriageID                  int                    (وضعیت تاهل)  → FK به Marriage
+    - EducationID                 int                    (تحصیلات)  → FK به Education
+    - Mobile                      bigint(11) NOT NULL    (موبایل)
+    - Mobile2                     bigint(11)             (موبایل دوم)
+    - AreaCode                    tinyint(3)             (پیش‌شماره)
+    - Phone                       int(8)                 (تلفن)
+    - Email                       varchar(255)           (ایمیل)
+    - CountryID                   int NOT NULL           (کشور)
+    - ProvinceID                  int NOT NULL           (استان)  → FK به Provinces
+    - CityID                      int NOT NULL           (شهرستان)  → FK به Cities
+    - Address                     text                   (آدرس)
+    - ZipCode                     bigint(10)             (کد پستی)
+    - SignupDate                  datetime NOT NULL      (تاریخ ثبت‌نام)
+    - LastLogin                   datetime               (آخرین ورود)
+    - Confirm                     tinyint                (تاییدشده)
+    - Blocked                     tinyint(1) NOT NULL    (مسدود)
+    - LastChangePass              date                   (آخرین تغییر رمز)
+    - Checked                     tinyint(1) NOT NULL    (بررسی‌شده)
+
+■ EventReserves — رزرو جلسات
+  توضیح: رزروهای ثبت‌شده وقت مشاوره
+  ردیف‌ها: 315,056
+  ستون تاریخ اصلی: Date
+  ستون‌ها:
+    - id                          int NOT NULL AUTO_INCREMENT (شناسه)
+    - EventID                     int NOT NULL           (جلسه)  → FK به Events
+    - UserID                      int NOT NULL           (کاربر)  → FK به Users
+    - AcceptorID                  int NOT NULL           (مشاور)  → FK به Users
+    - Date                        datetime NOT NULL      (تاریخ رزرو)
+
+■ _fix_endrefer — جدول فنی اصلاح ارجاع
+  توضیح: جدول کمکی فنی
+  ردیف‌ها: 137,981
+  ستون‌ها: (در نمونه موجود نیست — از متادیتای برنامه در زمان اجرا خوانده می‌شود)
+
+■ GroupEventMember — حضور در جلسات گروهی
+  توضیح: افراد حاضر در هر جلسه گروهی
+  ردیف‌ها: 53,746
+  ستون تاریخ اصلی: DateTime
+  ستون‌ها:
+    - id                          bigint NOT NULL AUTO_INCREMENT (شناسه)
+    - UserID                      bigint NOT NULL        (حاضر)  → FK به Users
+    - GroupID                     bigint NOT NULL        (گروه)  → FK به Groups
+    - GroupEventID                bigint                 (جلسه گروهی)  → FK به GroupEvents
+    - ServiceID                   int                    (خدمت)  → FK به Services
+    - TrackingCode                int                    (کد رهگیری)
+    - RefID                       bigint                 (کد ارجاع)
+    - DateTime                    datetime NOT NULL      (تاریخ)
+
+■ Sessions — نشست‌های ورود
+  توضیح: نشست‌های فعال کاربران
+  ردیف‌ها: 52,094
+  ستون تاریخ اصلی: DateTime
+  ستون‌ها:
+    - id                          int NOT NULL AUTO_INCREMENT (شناسه)
+    - UserID                      int NOT NULL           (کاربر)  → FK به Users
+    - Key                         varchar(255)            [حساس — پنهان‌سازی]
+    - IP                          varchar(20)           
+    - Browser                     varchar(255)           (مرورگر)
+    - DateTime                    datetime NOT NULL      (زمان ورود)
+
+■ GroupMembers — اعضای گروه‌ها
+  توضیح: اعضای ثبت‌شده هر گروه
+  ردیف‌ها: 46,202
+  ستون تاریخ اصلی: DateTime
+  ستون‌ها:
+    - id                          int NOT NULL AUTO_INCREMENT (شناسه)
+    - UserID                      int NOT NULL           (عضو)  → FK به Users
+    - NID                         bigint(10) NOT NULL    (کد ملی)
+    - GroupID                     int NOT NULL           (گروه)  → FK به Groups
+    - RefID                       bigint                 (کد ارجاع)
+    - DateTime                    datetime NOT NULL      (تاریخ عضویت)
+
+■ EventPsychology — شرح حال بالینی جلسه
+  توضیح: معاینه وضعیت روانی (MSE) و شرح حال کامل
+  ردیف‌ها: 24,874
+  ستون‌ها:
+    - id                          int NOT NULL AUTO_INCREMENT (شناسه)
+    - EventID                     int                    (جلسه)  → FK به Events
+    - UserID                      int                    (مراجع)  → FK به Users
+    - AcceptorID                  int                    (مشاور)  → FK به Users
+    - Job                         varchar(255)           (شغل)
+    - Ethnicity                   varchar(255)           (قومیت)
+    - Religion                    varchar(255)           (مذهب)
+    - ReligiousBelief             varchar(255)           (میزان مذهبی بودن)
+    - Children                    int                    (تعداد فرزند)
+    - ResidenceQuality            text                   (وضعیت مسکن)
+    - SpouseInfo                  text                   (اطلاعات همسر)
+    - ProblemStart                text                   (شروع مشکل)
+    - ProblemDuration             text                   (مدت مشکل)
+    - ClinicalObservation         text                   (مشاهده بالینی)
+    - Appearance                  text                   (ظاهر)
+    - PsychomotorStatus           text                   (وضعیت روانی-حرکتی)
+    - InterviewAttitude           text                   (نگرش در مصاحبه)
+    - Mood                        text                   (خلق)
+    - Affect                      text                   (عاطفه)
+    - Speech                      text                   (تکلم)
+    - Perception                  text                   (ادراک)
+    - ThoughtContent              text                   (محتوای فکر)
+    - ThoughtProcess              text                   (سیر فکر)
+    - Consciousness               text                   (هوشیاری)
+    - Orientation                 text                   (جهت‌یابی)
+    - Memory                      text                   (حافظه)
+    - Concentration               text                   (تمرکز)
+    - Intelligence                text                   (هوش)
+    - Judgment                    text                   (قضاوت)
+    - Insight                     text                   (بینش)
+    - MedicalHistory              text                   (سابقه پزشکی)
+    - FamilyHistory               text                   (سابقه خانوادگی)
+    - FamilyRelationships         text                   (روابط خانوادگی)
+    - DateTime                    datetime               (تاریخ ثبت)
+
+■ EventReferrs — ارجاع جلسه به مشاور دیگر
+  توضیح: ارجاع داخلی جلسات بین مشاوران
+  ردیف‌ها: 22,364
+  ستون‌ها: (در نمونه موجود نیست — از متادیتای برنامه در زمان اجرا خوانده می‌شود)
+
+■ ConsultantCourses — دوره‌های آموزشی مشاوران
+  توضیح: دوره‌های گذرانده‌شده مشاوران
+  ردیف‌ها: 14,009
+  ستون‌ها: (در نمونه موجود نیست — از متادیتای برنامه در زمان اجرا خوانده می‌شود)
+
+■ JobsList — فهرست مشاغل
+  توضیح: عناوین شغلی نظام صنفی
+  ردیف‌ها: 12,380
+  ستون‌ها: (در نمونه موجود نیست — از متادیتای برنامه در زمان اجرا خوانده می‌شود)
+
+■ EventQuizzes — آزمون‌های جلسه
+  توضیح: آزمون‌های تجویزشده در جلسه
+  ردیف‌ها: 8,740
+  ستون‌ها: (در نمونه موجود نیست — از متادیتای برنامه در زمان اجرا خوانده می‌شود)
+
+■ EventDisorders — اختلالات جلسه
+  توضیح: اختلالات ثبت‌شده برای هر جلسه
+  ردیف‌ها: 8,299
+  ستون‌ها: (در نمونه موجود نیست — از متادیتای برنامه در زمان اجرا خوانده می‌شود)
+
+■ Groups — گروه‌ها
+  توضیح: گروه‌های مشاوره‌ای و آموزشی
+  ردیف‌ها: 6,415
+  ستون تاریخ اصلی: CreateDate
+  ستون‌ها:
+    - id                          int NOT NULL AUTO_INCREMENT (شناسه)
+    - CorporateContractID         int                    (قرارداد)  → FK به CorporateContracts
+    - CenterID                    int NOT NULL           (مرکز)  → FK به Centers
+    - AcceptorID                  int NOT NULL           (مشاور گروه)  → FK به Users
+    - CreatorID                   int                    (ایجادکننده)  → FK به Users
+    - Tel                         varchar(15)            (تلفن)
+    - Address                     varchar(255) NOT NULL  (آدرس)
+    - CreateDate                  datetime NOT NULL      (تاریخ ایجاد)
+
+■ GroupEvents — جلسات گروهی
+  توضیح: جلسات برگزارشده گروه‌ها
+  ردیف‌ها: 6,364
+  ستون تاریخ اصلی: StartDate
+  ستون‌ها:
+    - id                          int NOT NULL AUTO_INCREMENT (شناسه)
+    - GroupID                     int NOT NULL           (گروه)  → FK به Groups
+    - Topic                       varchar(255) NOT NULL  (موضوع)
+    - Description                 varchar(255)           (شرح)
+    - StartDate                   datetime               (تاریخ شروع)
+    - EndDate                     datetime               (تاریخ پایان)
+    - SessionNumber               int                    (شماره جلسه)
+    - AcceptorID                  int                    (مشاور)  → FK به Users
+    - AcceptorCodeName            varchar(100)           (کد پذیرنده)
+    - AcceptorLevel               tinyint                (سطح پذیرنده)
+    - SupervisorID                int                    (ناظر)  → FK به Users
+    - CenterAdminID               int                    (مدیر مرکز)  → FK به Users
+    - AcceptorFee                 int                    (حق‌الزحمه مشاور)
+    - SecretaryFee                int NOT NULL           (حق دبیرخانه)  [حساس — پنهان‌سازی]
+    - ServiceID                   int                    (خدمت)  → FK به Services
+    - ContractID                  int                    (قرارداد)  → FK به CorporateContracts
+    - UserTariff                  int                    (تعرفه کاربر)
+    - BudgetReserved              tinyint NOT NULL       (رزرو سهمیه)
+    - BudgetUsed                  tinyint NOT NULL       (مصرف سهمیه)
+    - Weight                      decimal(10,1) NOT NULL (وزن)
+    - CenterID                    int                    (مرکز)  → FK به Centers
+    - OperatorConfirmUserID       int                    (تایید نظارت حرفه‌ای)  → FK به Users
+    - OperatorConfirmDateTime     datetime               (زمان تایید نظارت حرفه‌ای)
+    - SupervisorConfirmUserID     int                    (تایید ناظر کشور)  → FK به Users
+    - SupervisorConfirmDateTime   datetime               (زمان تایید ناظر کشور)
+
+■ EventsEms — موارد حاد
+  توضیح: موارد حاد (آسیب به خود) و فرآیند بررسی و پرداخت
+  ردیف‌ها: 5,202
+  ستون تاریخ اصلی: DateTime
+  ستون‌ها:
+    - id                          int NOT NULL AUTO_INCREMENT (شناسه)
+    - EventID                     int NOT NULL           (جلسه)  → FK به Events
+    - SecretaryNID                bigint(10) NOT NULL    (کد ملی ثبت‌کننده)  → FK به Users  [حساس — پنهان‌سازی]
+    - EMSType                     json                   (نوع مورد حاد)
+    - SuicidalFrom                json                   (عوامل خودکشی)
+    - PsychiatricDisorders        json                   (اختلالات روانپزشکی)
+    - SocialFactors               json                   (عوامل اجتماعی)
+    - ProtectiveFactors           json                   (عوامل محافظ)
+    - SuggestedActions            json                   (اقدامات پیشنهادی)
+    - ActionsTaken                text                   (اقدامات انجام‌شده)
+    - FinancialAssistanceRequest  int NOT NULL           (درخواست کمک مالی)
+    - DateTime                    datetime NOT NULL      (تاریخ ثبت)
+    - HadPaymentAmount            bigint                 (مبلغ پرداخت)
+    - HadPaymentStatus            varchar(20)            (وضعیت پرداخت)
+    - HadPaymentDescription       text                   (توضیح پرداخت)
+    - ConfirmedByUserID           int                    (تاییدکننده)  → FK به Users
+
+■ ConsultantTax — مالیات مشاوران
+  توضیح: مالیات محاسبه‌شده ماهانه مشاوران
+  ردیف‌ها: 4,887
+  ستون تاریخ اصلی: CreatedAt
+  ستون‌ها:
+    - id                          int NOT NULL AUTO_INCREMENT (شناسه)
+    - NID                         bigint(10) NOT NULL    (کد ملی)
+    - Year                        smallint NOT NULL      (سال)
+    - Month                       tinyint NOT NULL       (ماه)
+    - TaxAmount                   bigint NOT NULL        (مالیات (ریال))
+    - ExemptionMonths             tinyint NOT NULL       (ماه معافیت)
+    - MultiEmployerMonth          tinyint NOT NULL       (چند کارفرما (ماه))
+    - MultiEmployerYear           tinyint NOT NULL       (چند کارفرما (سال))
+    - TotalPayment                bigint NOT NULL        (حق‌الزحمه (ریال))
+    - CreatedByUserID             int                    (ثبت‌کننده)  → FK به Users
+    - CreatedAt                   datetime NOT NULL      (تاریخ ثبت)
+
+■ UserRoles — نقش‌ها و قراردادهای کاربران
+  توضیح: دسترسی‌ها و قرارداد هر کاربر
+  ردیف‌ها: 3,030
+  ستون تاریخ اصلی: StartDate
+  ستون‌ها:
+    - id                          int NOT NULL AUTO_INCREMENT (شناسه)
+    - UserID                      int NOT NULL           (کاربر)  → FK به Users
+    - RoleID                      int NOT NULL           (نقش)  → FK به Roles
+    - RoleOption                  int NOT NULL           (گزینه نقش)
+    - Level                       int NOT NULL           (سطح)
+    - StartDate                   datetime NOT NULL      (تاریخ شروع)
+    - EndDate                     datetime               (تاریخ پایان)
+    - Confirm                     datetime               (تاریخ تایید)
+    - AddedBy                     int                    (ثبت‌کننده)  → FK به Users
+    - IsSuspended                 tinyint(1) NOT NULL    (معلق)
+
+■ ConsultantExperience — سوابق کاری مشاوران
+  توضیح: تجربه‌های کاری مشاوران
+  ردیف‌ها: 2,112
+  ستون‌ها: (در نمونه موجود نیست — از متادیتای برنامه در زمان اجرا خوانده می‌شود)
+
+■ ConsultantTeachingExperience — سوابق تدریس مشاوران
+  توضیح: تجربه‌های تدریس مشاوران
+  ردیف‌ها: 2,061
+  ستون‌ها: (در نمونه موجود نیست — از متادیتای برنامه در زمان اجرا خوانده می‌شود)
+
+■ ReferrsRequest — درخواست‌های رزرو کاربران
+  توضیح: درخواست رزروی که کاربران ثبت کرده‌اند
+  ردیف‌ها: 1,878
+  ستون تاریخ اصلی: CreationDate
+  ستون‌ها:
+    - id                          int NOT NULL AUTO_INCREMENT (شناسه)
+    - UserID                      int NOT NULL           (کاربر)  → FK به Users
+    - Description                 mediumtext             (توضیحات)
+    - ProvinceID                  int NOT NULL           (استان)  → FK به Provinces
+    - CityID                      int NOT NULL           (شهرستان)  → FK به Cities
+    - CenterID                    int                    (مرکز)  → FK به Centers
+    - AdminReferrerID             int                    (معرف اداری)  → FK به Users
+    - CreationDate                datetime NOT NULL      (تاریخ ثبت)
+    - EditionDate                 datetime               (آخرین ویرایش)
+
+■ ReferrFollowUps — پیگیری ارجاع‌ها
+  توضیح: یادداشت‌های پیگیری ارجاع سها
+  ردیف‌ها: 1,731
+  ستون تاریخ اصلی: CreatedAt
+  ستون‌ها:
+    - id                          int NOT NULL AUTO_INCREMENT (شناسه)
+    - ReferrID                    int NOT NULL           (ارجاع)  → FK به Referrs
+    - UserID                      int NOT NULL           (پیگیر)  → FK به Users
+    - Comment                     text NOT NULL          (یادداشت)
+    - CreatedAt                   datetime NOT NULL      (تاریخ)
+
+■ EventNeuroFeedback — جلسات نوروفیدبک
+  توضیح: پروتکل و نتایج قبل/بعد نوروفیدبک
+  ردیف‌ها: 1,341
+  ستون‌ها:
+    - id                          int NOT NULL AUTO_INCREMENT (شناسه)
+    - EventID                     int NOT NULL           (جلسه)  → FK به Events
+    - Protocol                    varchar(255)           (پروتکل)
+    - Target                      varchar(255)           (هدف درمان)
+    - Visible                     varchar(255)           (مشاهدات)
+    - Action                      varchar(255)           (اقدام)
+    - Changed                     varchar(255)           (تغییرات)
+    - EzterabOld                  tinyint                (آزمون‌پذیری قبل)
+    - EzterabNew                  tinyint                (آزمون‌پذیری بعد)
+    - AfsorOld                    tinyint                (افسردگی قبل)
+    - AfsorNew                    tinyint                (افسردگی بعد)
+    - SleepProblemOld             tinyint                (مشکل خواب قبل)
+    - SleepProblemNew             tinyint                (مشکل خواب بعد)
+    - FocusOld                    tinyint                (تمرکز قبل)
+    - FocusNew                    tinyint                (تمرکز بعد)
+    - EnergyOld                   tinyint                (انرژی قبل)
+    - EnergyNew                   tinyint                (انرژی بعد)
+    - Other                       varchar(255)           (سایر)
+    - DateTime                    datetime               (تاریخ)
+
+■ Files — فایل‌ها
+  توضیح: فایل‌های بارگذاری‌شده (رزومه، نقشه مغزی و...)
+  ردیف‌ها: 1,264
+  ستون‌ها:
+    - id                          int NOT NULL AUTO_INCREMENT (شناسه)
+    - UserNID                     bigint(10) NOT NULL    (کد ملی کاربر)  → FK به Users
+    - Name                        varchar(255) NOT NULL  (نام فایل)
+    - Location                    varchar(1024) NOT NULL (مسیر)
+    - UploadDateTime              datetime NOT NULL      (تاریخ بارگذاری)
+
+■ ConsultantEducation — تحصیلات مشاوران
+  توضیح: مدارک تحصیلی مشاوران
+  ردیف‌ها: 1,252
+  ستون‌ها:
+    - id                          int NOT NULL AUTO_INCREMENT (شناسه)
+    - UserID                      int NOT NULL           (کاربر)  → FK به Users
+    - ConsultantNID               bigint(10)             (کد ملی مشاور)
+    - Field                       varchar(255)           (رشته)
+    - Orientation                 varchar(255)           (گرایش)
+    - Grade                       varchar(255)           (مدرک)
+    - Univesity                   varchar(255)           (دانشگاه)
+    - GraduationDate              varchar(25)            (سال فارغ‌التحصیلی)
+    - DateTime                    datetime               (تاریخ ثبت)
+    - File                        varchar(255)           (فایل)
+
+■ CenterBankAccount — حساب‌های بانکی مراکز
+  توضیح: اطلاعات حساب بانکی مراکز برای تسویه
+  ردیف‌ها: 1,204
+  ستون‌ها: (در نمونه موجود نیست — از متادیتای برنامه در زمان اجرا خوانده می‌شود)
+
+■ Cities — شهرستان‌ها
+  توضیح: شهرستان‌های کشور با کد API سها
+  ردیف‌ها: 1,121
+  ستون‌ها:
+    - id                          int NOT NULL           (شناسه)
+    - ProvinceID                  int NOT NULL           (استان)  → FK به Provinces
+    - Title                       varchar(255)           (شهرستان)
+    - APICode                     bigint NOT NULL        (کد API)
+
+■ CareerCounseling — مشاوره شغلی (اداره کار)
+  توضیح: درخواست‌های مشاوره شغلی از سامانه بهزیستی/اداره کار
+  ردیف‌ها: 1,056
+  ستون تاریخ اصلی: ApplicationDate
+  ستون‌ها:
+    - id                          int NOT NULL AUTO_INCREMENT (شناسه)
+    - RequestStatus               varchar(20)            (وضعیت درخواست)
+    - ProvinceID                  int                    (استان)  → FK به Provinces
+    - Province                    varchar(50)            (استان (متن))
+    - Office                      varchar(100)           (اداره)
+    - ApplicantNID                bigint(10)             (کد ملی متقاضی)
+    - ApplicantName               varchar(150)           (نام متقاضی)
+    - ApplicantMobile             bigint(11)             (موبایل)
+    - ApplicantGender             varchar(20)            (جنسیت)
+    - TargetGroup                 varchar(50)            (گروه هدف)
+    - ApplicationDate             datetime               (تاریخ درخواست)
+    - InstituteProvinceID         int                    (استان موسسه)  → FK به Provinces
+    - InstituteProvince           varchar(50)            (استان موسسه (متن))
+    - Institute                   varchar(100)           (موسسه)
+    - ConsultantID                int                    (مشاور)  → FK به Users
+    - CreateDate                  datetime               (تاریخ ثبت)
+    - AgentID                     int                    (کارشناس)  → FK به Users
+    - BudgetReserved              tinyint NOT NULL       (رزرو سهمیه)
+    - BudgetUsed                  tinyint NOT NULL       (مصرف سهمیه)
+    - Weight                      decimal(10,1) NOT NULL (وزن)
+
+■ Centers — مراکز و کلینیک‌ها
+  توضیح: فهرست مراکز خدمات مشاوره سراسر کشور
+  ردیف‌ها: 902
+  ستون‌ها:
+    - id                          int NOT NULL           (شناسه)
+    - CenterTitle                 varchar(255) NOT NULL  (نام مرکز)
+    - IsEnabled                   tinyint NOT NULL       (فعال)
+    - Address                     text                   (آدرس)
+    - Tel                         varchar(255)           (تلفن)
+    - CatID                       int                    (دسته)  → FK به CenterCategories
+    - CityID                      int NOT NULL           (شهرستان)  → FK به Cities
+    - CityTitle                   varchar(255) NOT NULL  (شهرستان)
+    - ProvinceID                  int NOT NULL           (استان)  → FK به Provinces
+    - ProvinceTitle               varchar(255) NOT NULL  (استان)
+
+■ EventChildPsychology — ارزیابی روانشناسی کودک
+  توضیح: فرم مشاهده بالینی کودک (ضمن جلسه)
+  ردیف‌ها: 711
+  ستون‌ها: (در نمونه موجود نیست — از متادیتای برنامه در زمان اجرا خوانده می‌شود)
+
+■ EventEmsComments — نظرات موارد حاد
+  توضیح: گزارش کمیسیون و نظرات روی مورد حاد
+  ردیف‌ها: 702
+  ستون‌ها:
+    - id                          int NOT NULL AUTO_INCREMENT (شناسه)
+    - EventEmsID                  int NOT NULL           (مورد حاد)  → FK به EventsEms
+    - UserID                      int                    (کاربر)  → FK به Users
+    - Comment                     varchar(255) NOT NULL  (نظر)
+    - Date                        datetime NOT NULL      (تاریخ)
+
+■ ConsultantHistory — تاریخچه اشتغال مشاوران
+  توضیح: تاریخچه همکاری مشاوران
+  ردیف‌ها: 666
+  ستون‌ها: (در نمونه موجود نیست — از متادیتای برنامه در زمان اجرا خوانده می‌شود)
+
+■ Disorders — اختلالات
+  توضیح: طبقه‌بندی درختی اختلالات روانی
+  ردیف‌ها: 513
+  ستون‌ها: (در نمونه موجود نیست — از متادیتای برنامه در زمان اجرا خوانده می‌شود)
+
+■ BudgetCity — تخصیص سهمیه به شهرستان
+  توضیح: سهم تخصیصی هر شهرستان از سهمیه‌ها
+  ردیف‌ها: 488
+  ستون‌ها: (در نمونه موجود نیست — از متادیتای برنامه در زمان اجرا خوانده می‌شود)
+
+■ ApiStates — وضعیت API — شهرها
+  توضیح: کد شهرها برای فراخوانی API سها
+  ردیف‌ها: 438
+  ستون‌ها: (در نمونه موجود نیست — از متادیتای برنامه در زمان اجرا خوانده می‌شود)
+
+■ Messages — پیام‌های داخلی
+  توضیح: پیام‌های بین کاربران سامانه
+  ردیف‌ها: 298
+  ستون تاریخ اصلی: Timestamp
+  ستون‌ها:
+    - id                          int NOT NULL AUTO_INCREMENT (شناسه)
+    - FromUID                     int NOT NULL           (فرستنده)  → FK به Users
+    - ToUID                       int                    (گیرنده)  → FK به Users
+    - Subject                     varchar(255)           (موضوع)
+    - Text                        text                   (متن)
+    - FileID                      int                    (فایل)  → FK به Files
+    - TargetRole                  varchar(50)            (نقش هدف)
+    - TargetProvinceID            int                    (استان هدف)  → FK به Provinces
+    - Timestamp                   datetime NOT NULL      (زمان)
+    - Star                        tinyint(1) NOT NULL    (ستاره)
+
+■ EventMedicine — داروهای تجویزی
+  توضیح: داروهای تجویزشده در جلسه روانپزشکی
+  ردیف‌ها: 217
+  ستون‌ها: (در نمونه موجود نیست — از متادیتای برنامه در زمان اجرا خوانده می‌شود)
+
+■ EventHeadMap — نقشه مغزی
+  توضیح: نتایج نقشه‌برداری مغز (QEEG)
+  ردیف‌ها: 178
+  ستون‌ها:
+    - id                          int NOT NULL AUTO_INCREMENT (شناسه)
+    - EventID                     int NOT NULL           (جلسه)  → FK به Events
+    - FileID                      varchar(255)           (فایل)  → FK به Files
+    - Description                 varchar(255)           (توصیف)
+    - DateTime                    datetime               (تاریخ)
+
+■ BudgetProvince — تخصیص سهمیه به استان
+  توضیح: سهم تخصیصی هر استان از سهمیه‌ها
+  ردیف‌ها: 165
+  ستون‌ها:
+    - Id                          int NOT NULL AUTO_INCREMENT (شناسه)
+    - BudgetId                    int                    (سهمیه)  → FK به Budget
+    - ProvinceId                  int                    (استان)  → FK به Provinces
+    - Amount                      decimal(10,1) NOT NULL (سقف)
+    - Remained                    decimal(10,1) NOT NULL (مانده)
+    - Reserved                    decimal(10,1) NOT NULL (رزرو)
+    - CreateTime                  datetime               (تاریخ)
+    - AmountBefore                decimal(10,1) NOT NULL (قبل از اجرا)
+    - Used                        decimal(10,1) NOT NULL (استفاده‌شده)
+    - Assigned                    decimal(10,1) NOT NULL (تخصیص)
+
+■ CorporateContractServices — خدمات و تعرفه قراردادها
+  توضیح: تعرفه هر سطح مشاور برای هر خدمت در قرارداد
+  ردیف‌ها: 139
+  ستون‌ها:
+    - id                          int NOT NULL AUTO_INCREMENT (شناسه)
+    - CorporateContractID         int NOT NULL           (قرارداد)  → FK به CorporateContracts
+    - ServiceID                   int NOT NULL           (خدمت)  → FK به Services
+    - UserTariff                  int NOT NULL           (تعرفه کاربر)
+    - ConsultantLevel1            int NOT NULL           (حق مشاور پایه)
+    - ConsultantLevel2            int NOT NULL           (حق مشاور ارشد)
+    - ConsultantLevel3            int NOT NULL           (حق مشاور متخصص)
+    - ConsultantLevel4            int NOT NULL           (حق مشاور خبره)
+    - ConsultantLevel5            int NOT NULL           (حق مشاور ممتاز)
+    - ConsultantDR                int NOT NULL           (حق دکتر)
+    - SecretaryFee                int NOT NULL           (حق دبیرخانه)  [حساس — پنهان‌سازی]
+    - SupervisorFee               int NOT NULL           (حق ناظر)
+    - CenterFee                   int NOT NULL           (سهم مرکز)
+    - AdminFee                    int NOT NULL           (سهم مدیریت)
+
+■ UserMFA — رمز دوم کاربران
+  توضیح: تنظیمات ورود دومرحله‌ای
+  ردیف‌ها: 103
+  ستون‌ها: (در نمونه موجود نیست — از متادیتای برنامه در زمان اجرا خوانده می‌شود)
+
+■ BudgetCenter — تخصیص سهمیه به مرکز
+  توضیح: سهم تخصیصی هر مرکز از سهمیه‌ها
+  ردیف‌ها: 69
+  ستون‌ها: (در نمونه موجود نیست — از متادیتای برنامه در زمان اجرا خوانده می‌شود)
+
+■ CorporateContractCoupons — کدهای تخفیف قرارداد
+  توضیح: کوپن‌های شناسایی مشمولان قرارداد
+  ردیف‌ها: 55
+  ستون‌ها: (در نمونه موجود نیست — از متادیتای برنامه در زمان اجرا خوانده می‌شود)
+
+■ CenterEquipments — تجهیزات مراکز
+  توضیح: تجهیزات ثبت‌شده هر مرکز
+  ردیف‌ها: 39
+  ستون‌ها: (در نمونه موجود نیست — از متادیتای برنامه در زمان اجرا خوانده می‌شود)
+
+■ Provinces — استان‌ها
+  توضیح: استان‌های کشور با کد API
+  ردیف‌ها: 31
+  ستون‌ها:
+    - id                          int NOT NULL           (شناسه)
+    - Title                       varchar(255)           (استان)
+    - API                         int NOT NULL           (کد API)
+    - DetailCode                  smallint               (کد تفصیلی)
+
+■ Settings — تنظیمات سیستم
+  توضیح: کلید/مقدار تنظیمات
+  ردیف‌ها: 24
+  ستون‌ها:
+    - Name                        varchar(255) NOT NULL  (کلید)
+    - Value                       varchar(255)           (مقدار)
+
+■ CorporateContracts — قراردادهای سازمانی
+  توضیح: قراردادهای تشخیص خودکار مشمولان
+  ردیف‌ها: 22
+  ستون‌ها:
+    - id                          int NOT NULL AUTO_INCREMENT (شناسه)
+    - CorporateCustomerID         int NOT NULL           (مشتری سازمانی)  → FK به CorporateCustomers
+    - AppDefault                  tinyint NOT NULL       (پیش‌فرض اپ)
+    - StartDate                   datetime NOT NULL      (شروع)
+    - EndDate                     datetime NOT NULL      (پایان)
+    - Remove                      tinyint(1) NOT NULL    (حذف‌شده)
+
+■ Roles — نقش‌ها
+  توضیح: نقش‌های سامانه
+  ردیف‌ها: 21
+  ستون‌ها:
+    - id                          int NOT NULL           (شناسه)
+    - Title                       varchar(255) NOT NULL  (عنوان نقش)
+    - CodeName                    varchar(255) NOT NULL  (کد نقش)
+
+■ Services — خدمات
+  توضیح: انواع خدمت (مشاوره فردی، گروهی، نوروفیدبک و...)
+  ردیف‌ها: 15
+  ستون‌ها:
+    - id                          int NOT NULL           (شناسه)
+    - Name                        varchar(255) NOT NULL  (نام خدمت)
+    - Short                       varchar(255) NOT NULL  (نام کوتاه)
+    - SohaID                      int NOT NULL           (کد سها)
+    - Weight                      decimal(10,1) NOT NULL (وزن)
+
+■ EquipmentItems — اقلام تجهیزات
+  توضیح: اقلام استاندارد تجهیزات مراکز
+  ردیف‌ها: 13
+  ستون‌ها: (در نمونه موجود نیست — از متادیتای برنامه در زمان اجرا خوانده می‌شود)
+
+■ Education — مدارک تحصیلی
+  توضیح: سطح تحصیلات
+  ردیف‌ها: 9
+  ستون‌ها:
+    - id                          int NOT NULL           (شناسه)
+    - Name                        varchar(255)           (مدرک)
+
+■ Budget — سهمیه‌های خدمات (بودجه)
+  توضیح: سهمیه‌های کشوری خدمات فردی/گروهی/شغلی
+  ردیف‌ها: 6
+  ستون‌ها:
+    - Id                          int NOT NULL AUTO_INCREMENT (شناسه)
+    - Title                       varchar(255)           (عنوان سهمیه)
+    - Amount                      decimal(10,1) NOT NULL (سقف سهمیه)
+    - Remained                    decimal(10,1) NOT NULL (مانده)
+    - Reserved                    decimal(10,1) NOT NULL (رزرو)
+    - StartDate                   datetime               (تاریخ شروع)
+    - EndDate                     datetime               (تاریخ پایان)
+    - CreateTime                  datetime               (تاریخ ایجاد)
+    - AmountBefore                decimal(10,1) NOT NULL (سهمیه قبل از اجرا)
+    - Used                        decimal(10,1) NOT NULL (استفاده‌شده)
+    - Assigned                    decimal(10,1) NOT NULL (تخصیص‌یافته)
+
+■ CorporateCustomers — مشتریان سازمانی
+  توضیح: سازمان‌های طرف قرارداد
+  ردیف‌ها: 6
+  ستون‌ها:
+    - id                          int NOT NULL AUTO_INCREMENT (شناسه)
+    - Title                       varchar(255)           (نام سازمان)
+    - Discount                    int                    (تخفیف)
+    - Phone                       varchar(50)            (تلفن)
+
+■ Marriage — وضعیت تاهل
+  توضیح: انواع وضعیت تاهل
+  ردیف‌ها: 6
+  ستون‌ها:
+    - id                          int NOT NULL           (شناسه)
+    - Name                        varchar(255)           (وضعیت)
+
+■ Religion — ادیان
+  توضیح: فهرست ادیان
+  ردیف‌ها: 6
+  ستون‌ها: (در نمونه موجود نیست — از متادیتای برنامه در زمان اجرا خوانده می‌شود)
+
+■ CenterCategories — دسته‌بندی مراکز
+  توضیح: انواع استقرار مرکز (مستقر در اداره، مستقل و...)
+  ردیف‌ها: 5
+  ستون‌ها: (در نمونه موجود نیست — از متادیتای برنامه در زمان اجرا خوانده می‌شود)
+
+■ SpecialOccasions — مناسبت‌ها
+  توضیح: بنر مناسبت‌های نمایشی
+  ردیف‌ها: 4
+  ستون‌ها:
+    - id                          int NOT NULL AUTO_INCREMENT (شناسه)
+    - Title                       varchar(255) NOT NULL  (عنوان)
+    - ImagePath                   varchar(512) NOT NULL  (تصویر)
+    - DisplayDate                 date NOT NULL          (تاریخ نمایش)
+    - IsActive                    tinyint(1) NOT NULL    (فعال)
+    - CreatedByUserID             int                    (ایجادکننده)  → FK به Users
+    - CreatedAt                   datetime NOT NULL      (تاریخ ایجاد)
+
+■ InvitePersons — کاربران معرفی‌شده
+  توضیح: افراد معرفی‌شده از سوی گروه‌ها/سازمان‌ها
+  ردیف‌ها: 3
+  ستون تاریخ اصلی: CreateTime
+  ستون‌ها:
+    - ID                          int NOT NULL AUTO_INCREMENT (شناسه)
+    - NID                         bigint(10)             (کد ملی)
+    - Name                        varchar(60) NOT NULL   (نام)
+    - Mobile                      varchar(12) NOT NULL   (شماره اول)
+    - Phone                       varchar(12)            (شماره دوم)
+    - Description                 varchar(255)           (توضیحات)
+    - Response                    varchar(255)           (نتیجه)
+    - GroupID                     varchar(11)            (شناسه گروه)
+    - GroupName                   varchar(255)           (نام گروه)
+    - ProvinceID                  int                    (استان)  → FK به Provinces
+    - CityID                      int                    (شهرستان)  → FK به Cities
+    - CenterID                    int                    (مرکز)  → FK به Centers
+    - CreateTime                  datetime NOT NULL      (تاریخ ثبت)
+    - UpdateTime                  datetime               (آخرین تغییر)
+
+■ ApiTokens — توکن‌های API
+  توضیح: توکن‌های احراز هویت سرویس‌های خارجی
+  ردیف‌ها: 1
+  ستون‌ها: (در نمونه موجود نیست — از متادیتای برنامه در زمان اجرا خوانده می‌شود)
+
+■ CorporateContractNIDs — کدهای ملی قرارداد
+  توضیح: مشمولان قرارداد سازمانی بر اساس کد ملی
+  ردیف‌ها: 1
+  ستون‌ها: (در نمونه موجود نیست — از متادیتای برنامه در زمان اجرا خوانده می‌شود)
+
+■ UserTicket — تیکت‌های پشتیبانی
+  توضیح: تیکت‌های ثبت‌شده کاربران
+  ردیف‌ها: 1
+  ستون‌ها: (در نمونه موجود نیست — از متادیتای برنامه در زمان اجرا خوانده می‌شود)
+
+■ ConsultScope — حوزه‌های مشاوره
+  توضیح: حوزه‌های تخصصی مشاوره
+  ردیف‌ها: 0
+  ستون‌ها: (در نمونه موجود نیست — از متادیتای برنامه در زمان اجرا خوانده می‌شود)
+
+■ Expenses — هزینه‌ها
+  توضیح: هزینه‌های ثبت‌شده مراکز
+  ردیف‌ها: 0
+  ستون تاریخ اصلی: PayDate
+  ستون‌ها:
+    - id                          int NOT NULL AUTO_INCREMENT (شناسه)
+    - CenterID                    int                    (مرکز)  → FK به Centers
+    - UserID                      int                    (کاربر)  → FK به Users
+    - Category                    varchar(50)            (دسته)
+    - Type                        varchar(100)           (نوع)
+    - Title                       varchar(255) NOT NULL  (عنوان)
+    - PayTo                       varchar(100)           (پرداخت به)
+    - PayType                     varchar(50)            (نوع پرداخت)
+    - Fee                         int                    (مبلغ)
+    - PayDate                     datetime               (تاریخ پرداخت)
+    - DateTime                    datetime               (تاریخ ثبت)
+    - Description                 text                   (توضیحات)
+    - FileID                      varchar(11) NOT NULL   (فایل)  → FK به Files
+
+■ GroupEventReserves — رزرو جلسات گروهی
+  توضیح: رزروهای جلسات گروهی
+  ردیف‌ها: 0
+  ستون‌ها: (در نمونه موجود نیست — از متادیتای برنامه در زمان اجرا خوانده می‌شود)
+
+■ Helps — راهنماهای سامانه
+  توضیح: فایل‌های راهنمای هر نقش
+  ردیف‌ها: 0
+  ستون‌ها:
+    - id                          int NOT NULL AUTO_INCREMENT (شناسه)
+    - RoleID                      int NOT NULL           (نقش)  → FK به Roles
+    - File_1                      varchar(255) NOT NULL  (فایل ۱)
+
+■ Incomes — درآمدها
+  توضیح: درآمدهای ثبت‌شده مراکز
+  ردیف‌ها: 0
+  ستون تاریخ اصلی: IncomeDate
+  ستون‌ها:
+    - id                          int NOT NULL AUTO_INCREMENT (شناسه)
+    - CenterID                    int                    (مرکز)  → FK به Centers
+    - UserID                      int                    (کاربر)  → FK به Users
+    - EventID                     int                    (جلسه)  → FK به Events
+    - Type                        varchar(50)            (نوع)
+    - Title                       varchar(255)           (عنوان)
+    - Fee                         int                    (مبلغ)
+    - IncomeDate                  datetime               (تاریخ درآمد)
+    - DateTime                    datetime               (تاریخ ثبت)
+    - Description                 text                   (توضیحات)
+    - FileID                      varchar(11) NOT NULL   (فایل)  → FK به Files
+
+■ Notifications — اعلان‌ها
+  توضیح: اعلان‌های سیستمی
+  ردیف‌ها: 0
+  ستون‌ها: (در نمونه موجود نیست — از متادیتای برنامه در زمان اجرا خوانده می‌شود)
+
+■ NotificationsQueue — صف اعلان‌ها
+  توضیح: اعلان‌های در صف ارسال
+  ردیف‌ها: 0
+  ستون‌ها: (در نمونه موجود نیست — از متادیتای برنامه در زمان اجرا خوانده می‌شود)
+
+■ UserPasskeys — کلیدهای عبور
+  توضیح: Passkeyهای ثبت‌شده کاربران
+  ردیف‌ها: 0
+  ستون‌ها: (در نمونه موجود نیست — از متادیتای برنامه در زمان اجرا خوانده می‌شود)
+
+پایان فایل ساختار — این فایل به‌روزرسانی‌شده بر اساس بکاپ واقعی است.

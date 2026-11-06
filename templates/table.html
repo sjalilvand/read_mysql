@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% set nav = 'tables' %}
+{% block title %}{{ label }} — مرور داده{% endblock %}
+{% block body %}
+<h1>🗄️ {{ label }} <code style="font-size:12px">{{ name }}</code></h1>
+<div class="small muted" style="margin:-8px 0 14px">{{ desc }}</div>
+
+<div class="card no-print">
+  <form method="get" class="flex" id="tableFilterForm">
+    <input type="text" name="q" value="{{ q }}" placeholder="🔍 جستجوی سراسری در ستون‌های متنی…" style="min-width:260px">
+    <input type="hidden" name="sort" value="{{ sort }}">
+    <input type="hidden" name="dir" value="{{ direction }}">
+    <select name="ps" onchange="this.form.submit()" title="تعداد ردیف در هر صفحه">
+      <option value="25" {{ 'selected' if per_page==25 }}>۲۵ ردیف</option>
+      <option value="50" {{ 'selected' if per_page==50 }}>۵۰ ردیف</option>
+      <option value="100" {{ 'selected' if per_page==100 }}>۱۰۰ ردیف</option>
+      <option value="200" {{ 'selected' if per_page==200 }}>۲۰۰ ردیف</option>
+      <option value="500" {{ 'selected' if per_page==500 }}>۵۰۰ ردیف</option>
+    </select>
+    <button class="btn">اعمال</button>
+    {% if q or active_filters %}<a class="btn gray" href="/table/{{ name }}">پاک کردن فیلترها</a>{% endif %}
+    <a class="btn green" href="/table/{{ name }}/export.csv?{{ table_qs() }}">⬇ CSV</a>
+    <a class="btn green" href="/table/{{ name }}/export?{{ table_qs() }}">⬇ اکسل</a>
+    <span class="small muted">نتیجه: <b class="num">{{ '{:,}'.format(total) }}</b> ردیف{% if active_filters or q %} (فیلترشده){% endif %}</span>
+  </form>
+  {% if active_filters %}
+  <div class="flex wrap" style="margin-top:8px">
+    <span class="small muted">فیلترهای فعال:</span>
+    {% for c, v in active_filters.items() %}
+    <span class="tag">{{ c }}: {{ v }}</span>
+    {% endfor %}
+  </div>
+  {% endif %}
+</div>
+
+<div class="tbl-wrap">
+  <form method="get" id="tableColForm">
+    <input type="hidden" name="q" value="{{ q }}">
+    <input type="hidden" name="ps" value="{{ per_page }}">
+    <input type="hidden" name="sort" value="{{ sort }}">
+    <input type="hidden" name="dir" value="{{ direction }}">
+    <table class="data">
+      <thead>
+        <tr>
+          {% for c in result.columns %}
+          <th {% if not c.label == '—' %}data-sort="{{ c.key }}"{% endif %}>
+            {{ c.label }}{% if sort == c.key %} {{ '▼' if direction=='desc' else '▲' }}{% endif %}
+          </th>
+          {% endfor %}
+        </tr>
+        <tr class="filter-row">
+          {% for c in result.columns %}
+          <th>
+            {% if c.key %}<input type="text" name="f_{{ c.key }}" value="{{ active_filters.get(c.key, '') }}"
+               placeholder="{{ '۱۴۰۴/۰۷/۱۲' if c.kind == 'date' else 'فیلتر…' }}" title="فیلتر ستون {{ c.label }}">{% endif %}
+          </th>
+          {% endfor %}
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in result.rows %}
+        <tr>
+          {% for v in row %}<td>{{ v }}</td>{% endfor %}
+        </tr>
+        {% else %}
+        <tr><td colspan="{{ result.columns|length }}" class="muted">ردیفی با این فیلترها یافت نشد</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </form>
+</div>
+<div class="tbl-foot">
+  <span>صفحه <b class="num">{{ '{:,}'.format(page_no) }}</b> از <b class="num">{{ '{:,}'.format(pages) }}</b></span>
+  <span class="pager">
+    {% if page_no > 1 %}<a href="/table/{{ name }}?{{ table_qs(p=1) }}">« اول</a>{% endif %}
+    {% if page_no > 1 %}<a href="/table/{{ name }}?{{ table_qs(p=page_no-1) }}">‹ قبلی</a>{% endif %}
+    {% set start = [1, page_no - 2] | max %}
+    {% set end = [pages, start + 4] | min %}
+    {% if start > 1 %}<span class="dots">…</span>{% endif %}
+    {% for pn in range(start, end + 1) %}
+      {% if pn == page_no %}<span class="cur num">{{ pn }}</span>
+      {% else %}<a class="num" href="/table/{{ name }}?{{ table_qs(p=pn) }}">{{ pn }}</a>{% endif %}
+    {% endfor %}
+    {% if end < pages %}<span class="dots">…</span>{% endif %}
+    {% if page_no < pages %}<a href="/table/{{ name }}?{{ table_qs(p=page_no+1) }}">بعدی ›</a>{% endif %}
+    {% if page_no < pages %}<a href="/table/{{ name }}?{{ table_qs(p=pages) }}">آخر »</a>{% endif %}
+  </span>
+</div>
+{% endblock %}
